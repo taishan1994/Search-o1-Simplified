@@ -30,7 +30,7 @@ top_k = 10
 
 
 def run_generation(sequences_needing_generation, model_url):
-    print(sequences_needing_generation[0]["prompt"])
+    # print(sequences_needing_generation[0]["prompt"])
     result = chat_without_model(sequences_needing_generation[0]["prompt"], model_url)
     return [result]
 
@@ -39,7 +39,7 @@ def run_generation(sequences_needing_generation, model_url):
 def extract_between(text: str, start_tag: str, end_tag: str) -> Optional[str]:
     pattern = re.escape(start_tag) + r"(.*?)" + re.escape(end_tag)
     matches = re.findall(pattern, text, flags=re.DOTALL)
-    print(matches)
+    # print(matches)
     if matches:
         return matches[-1].strip()
     return None
@@ -97,10 +97,11 @@ def rag_agent_main(query, model_url):
         "- Use <|begin_url|> to request full page content and end with <|end_url|>.\n"
         "- When done retrieving information, continue your reasoning.\n\n"
     )
-
+    # 'When you receive some URLs, if you lack certain information for the question, you need to choose which URLs to continue viewing and write <|begin_url|> url1, url2, ... <|end_url|>.\n\n'
     user_prompt = (
         'Please answer the following question. You should think step by step to solve it.\n\n'
         'Provide your final answer in the format \\boxed{YOUR_ANSWER}.\n\n'
+        'When you '
         f'Question:\n{query}\n\n'
     )
 
@@ -242,25 +243,40 @@ def rag_agent_main(query, model_url):
             turn += 1
             print(f"Turn {turn}: {len(sequences_needing_generation)} sequences need generation. Generating with LLM...")
             outputs = run_generation(sequences_needing_generation, model_url)
-            print("*"*100)
-            print(outputs[0])
-            print("*" * 100)
+            # print("*"*100)
+            # print(outputs[0])
+            # print("*" * 100)
             print("Generation complete. Processing outputs...")
 
             # Process each generated output
             for seq, out in zip(sequences_needing_generation, outputs):
                 text = out
-                seq['history'].append(text)
-                # Append generated text to prompt and output
-                seq['prompt'] += text
-                seq['output'] += text
 
                 # Check if the generated content contains search queries or URL fetch requests
                 search_query = extract_between(text, BEGIN_SEARCH_QUERY, END_SEARCH_QUERY)
 
+                if turn == 1:
+                    if search_query:
+                        tmp_text = BEGIN_SEARCH_QUERY + search_query + END_SEARCH_QUERY
+                    else:
+                        tmp_text = text
+                else:
+                    tmp_text = text
+
                 # 如果turn==0，那么将不将url提取出来
-                if turn != 0:
+                if turn != 1:
                     url_fetch = extract_between(text, BEGIN_URL, END_URL)
+                    if url_fetch:
+                        tmp_text = "".join(text.split(END_URL)[:-1]) + END_URL
+                        seq['history'].append(tmp_text)
+                        # Append generated text to prompt and output
+                        seq['prompt'] += tmp_text
+                        seq['output'] += tmp_text
+                    else:
+                        seq['history'].append(tmp_text)
+                        # Append generated text to prompt and output
+                        seq['prompt'] += tmp_text
+                        seq['output'] += tmp_text
 
                 if search_query:
                     # Check if search limit is not exceeded
@@ -334,13 +350,16 @@ def rag_agent_main(query, model_url):
 
     save_caches(url_cache_path, url_cache)
 
+    print(sequences_needing_generation[0]["prompt"])
+    print("="*100)
     return sequences_needing_generation[0]["output"]
 
 
 if __name__ == '__main__':
-    model_url = "http://192.168.16.4:8000/v1"
+    model_url = "http://ip地址:8000/v1"
     message = "刘翔获得了多少个冠军？"
     message = "《哪吒之魔童闹海》目前的票房是多少？位于全球票房第几？"
-    message = "小米su7 ultra定价多少钱，和su7相比有什么变化？"
+    message = "《哪吒之魔童闹海》的目前票房是多少？"
+    # message = "小米su7 ultra定价多少钱，和su7相比有什么变化？"
     response = rag_agent_main(message, model_url)
     print(response)

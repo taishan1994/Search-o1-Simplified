@@ -8,7 +8,7 @@
 
 配套的学习文档：
 
-（1）【search-o1】大模型的推理
+（1）[【search-o1】大模型的推理](https://mp.weixin.qq.com/s/ISE2k87aiBi4i67wXH1how)
 
 （2）【search-o1】利用RAG进行检索问答
 

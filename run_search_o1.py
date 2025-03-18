@@ -463,13 +463,13 @@ def run_search_o1_main(query, model_url):
 
 
 if __name__ == "__main__":
-    model_url = "http://192.168.16.4:8000/v1"
-    model_url = "http://192.168.16.6:9001/v1"
+    model_url = "http://ip地址:8000/v1"
     message = "刘翔获得了多少个冠军？"
     message = "《哪吒之魔童闹海》目前的票房是多少？位于全球票房第几？"
     # message = "梳理一下《哪吒之魔童闹海》的票房的发展趋势"
     message = "manus是什么？"
     message = "W8A8量化有什么方法吗"
     # message = "姚明和奥尼尔哪一个更厉害？"
+    message = "《哪吒之魔童闹海》目前的票房是多少？"
     response = run_search_o1_main(message, model_url)
     print(response)
