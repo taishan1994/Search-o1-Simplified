@@ -10,8 +10,8 @@
 
 （1）[【search-o1】大模型的推理](https://mp.weixin.qq.com/s/ISE2k87aiBi4i67wXH1how)
 
-（2）【search-o1】利用RAG进行检索问答
+（2）[【search-o1】利用RAG进行检索问答](https://mp.weixin.qq.com/s/Eucfjn99wDpcmFmACgywUQ)
 
-（3）【search-o1】利用Agent结合搜索引擎进行问答
+（3）[【search-o1】利用Agent结合搜索引擎进行问答](https://mp.weixin.qq.com/s/MHc3BdigVvd-oW3Szm2zrQ?poc_token=HJWiz2ijBMxKCEMq2xkCyo8jRJap4chTd0k5vHct)
 
-（4）【search-o1】使用search-o1方法进行智能检索问答
+（4）[【search-o1】使用search-o1方法进行智能检索问答](https://mp.weixin.qq.com/s/Um6NKMtypvF2cq7-D_Ya1A)
